@@ -1,0 +1,55 @@
+version : '3.3' # Specifies the version of the Docker Compose format being used.
+
+services: # Defines the services (containers) that will be managed by Docker Compose.
+  postgres: # Service name, in this case, "postgres".
+    image: postgres:13 # Specifies the Docker inage to be used for the PostgreSQL container (version 13).
+    environment: # Defines environment variables for the container.
+      - POSTGRES_DB=my_store # Sets the name of the database to be created inside the container.
+      - POSTGRES_USER=fabian # Sets the username fot the PostgreSQL user.
+      - POSTGRES_PASSWORD=password # Sets the password fot the PostgreSQL user.
+    ports:
+      - 5432:5432 # Maps port 5432 from the host to port 5432 in the container (PostgreSQL's default port).
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data # Mounts a volume from the host machine to store PostgreSQL data.
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@mail.com
+      - PGADMIN_DEFAULT_PASSWORD=password
+    ports:
+      - 5050:80
+
+  mysql:
+    image: mysql:5
+    platform: linux/amd64
+    environment: # Defines environment variables for the container.
+      - MYSQL_DATABASE=my_store
+      - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_PORT=3306
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    platform: linux/amd64
+    environment: # Defines environment variables for the container.
+      - MYSQL_ROOT_PASSWORD=password
+      - PMA_HOST=mysql
+    ports:
+      - 8080:80
+
+# docker-compose up -d postgres  (This is the command to lift up the container).
+# docker-compose down. (This command put the container service down).
+# docker-compose exec postgres bash (To start Postgres container on a terminal window).
+# psql -h localhost -d my_store -U fabian (To start psql with username fabian)
+# \d+ (This command brings schema's structure -- available tables).
+# \q (To exit Postgres Database).
+# exit (to exit container and to come back to localhost terminal).
+
+# docker-compose up -d pgadmin (To lift up pgadmin service)
+# docker ps (Command to get CONTAINER ID and some other important info)
+# docker inspect #CONTAINER ID (This command inspects container main info. Where the IP address may be found directly)
